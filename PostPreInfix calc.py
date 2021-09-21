@@ -1,3 +1,5 @@
+from trans_from_infix import *
+
 operators = {
     '+': (lambda x, y: x + y, 2),
     '-': (lambda x, y: x - y, 2),
@@ -81,24 +83,26 @@ def pre_to_inf(pre_exp):
         part = '( ' + str(expression[pose_op + 1]), str(expression[pose_op]), str(expression[pose_op + 2]) + ' )'
         expression[pose_op + 2] = part
         del expression[pose_op:pose_op + 2]
-    return str(expression[0])
+    return str(expression[0]).replace(',', '').replace('"', '').replace("'", '').replace('((', '(') \
+               .replace('))', ')')[1:-1]
 
 
 def inf_to_post(inf_exp):
-    print('WIP')
-    return
+    print('Переводим инфикс в постфикс | {}'.format(inf_exp))
+    return trans_from_infix(inf_exp, 'postfix')[0]
 
 
 def inf_to_pre(inf_exp):
-    print('WIP')
-    return
+    print('Переводим инфикс в префикс | {}'.format(inf_exp))
+    return trans_from_infix(inf_exp, 'prefix')[0]
 
 
 def convert(expression, to_type):
+    print('Конвертируем {} в {}'.format(expression, to_type))
     if input_check(expression):
         if exp_type(expression) == 'infix_type':
             if to_type == 'префикс':
-                pass
+                inf_to_pre(expression)
             elif to_type == 'постфикс':
                 inf_to_post(expression)
             else:
@@ -107,19 +111,20 @@ def convert(expression, to_type):
             if to_type == 'инфикс':
                 return pre_to_inf(expression)
             elif to_type == 'постфикс':
-                inf_to_post(None)
+                return inf_to_post(pre_to_inf(expression))
             else:
                 return expression
         elif exp_type(expression) == 'postfix_type':
             if to_type == 'инфикс':
                 return post_to_inf(expression)
             elif to_type == 'префикс':
-                pass
+                return inf_to_pre(post_to_inf(expression))
             else:
                 return expression
 
 
 def args_check(commands, args):
+    print('Проверяем введенную команду')
     if len(commands) != args:
         print('Недостаточно аргументов к команде')
         return False
@@ -131,7 +136,7 @@ def main():
     print('Калькулятор и преобразователь Инф/Пост/Префиксных выражений')
     print('Для получения списка команд введите "помощь", "справка" или "команды"')
     while True:
-        commands = input('Введите команду: ').split(' /')
+        commands = input('Введите команду: ').split(' / ')
 
         if commands[0].lower() in ('выйти', 'выход'):
             print('Выход...')
@@ -152,18 +157,19 @@ def main():
                     print('Выражение записано в постфиксной нотации')
         elif commands[0] in ('перевести', 'конвертировать'):
             print('Определена команда на конвертацию выражения')
-            if args_check(commands, 3):
-                print('Ответ:', convert(commands[1], commands[2]))
+            if args_check(commands, 2):
+                print('Ответ: {}'.format(convert(commands[1].split(" в ")[0], commands[1].split(" в ")[1])))
         elif commands[0].lower() in ('помощь', 'команды', 'справка'):
             print('помощь/команды/справка -- получить список команд и справку')
             print('выход/выйти -- покинуть программу')
             print('определить/определить тип /{выражение} -- определяет нотацию выражения')
-            print('вычислить/посчитать /{выражение} -- вычисляет заданное выражение')
-            print('перевести/конвертировать /{выражение} /{тип} -- переводит выражение в заданный тип\n')
+            print('вычислить/посчитать / {выражение} -- вычисляет заданное выражение')
+            print('перевести/конвертировать / {выражение} в {тип} -- переводит выражение в заданный тип (инфикс, '
+                  'постфикс, префикс)\n')
             print('Оператор математических выражений различных нотаций')
             print('Функционал включает в себя: конвертацию выражений в другие нотации, вычисление выражений различной '
                   'нотации, определение нотации выражения\n')
-            print('Версия 1.2')
+            print('Версия 1.3')
             print('Разработчик -- Akwaena')
             print('По заказу Зелениной С.Б.')
             print('Сентябрь 2021')
