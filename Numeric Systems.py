@@ -1,6 +1,3 @@
-from functools import reduce
-
-
 def generate_digits(base) -> list:
     """
     Генератор массива цифр для base-ичной системы счисления
