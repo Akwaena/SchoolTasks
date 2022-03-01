@@ -24,4 +24,4 @@ def f(A):
 
 
 for i in range(100):
-    if F(i)!=False: print(i)
+    if f(i)!=False: print(i)
